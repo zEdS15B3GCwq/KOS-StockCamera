@@ -1,5 +1,21 @@
 @LAZYGLOBAL off.
 
+// libcamera.ks
+
+// All functions check to ensure the stock camera addon is installed.  If not,
+// they return silently.  This allows you to include this script in a suite,
+// even if the addon is not installed.  This is intended as a code portability
+// feature.  For library scripts I recommend defining additional functions
+// which in turn call the functions in this library, allowing other scripts to
+// call these functions while not knowing that the script has been run in the
+// current program session.  Like this:
+// function exenode_slerpCameraPosition {
+// 	parameter pos, dt is 10.
+// 	if defined libcamera_camera {
+// 		slerpCameraPosition(pos, dt).
+// 	}
+// }
+
 if (not (defined libcamera_camera)) and addons:available("camera") {
 	// defining global variables to store state information
 	// due to the definition and avaiabilty checks above, these variables canceled
