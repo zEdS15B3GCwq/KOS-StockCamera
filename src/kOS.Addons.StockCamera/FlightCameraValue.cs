@@ -1,4 +1,5 @@
-﻿using kOS.Safe.Encapsulation;
+﻿using System;
+using kOS.Safe.Encapsulation;
 using kOS.Safe.Encapsulation.Suffixes;
 using kOS.Safe.Exceptions;
 using kOS.Safe.Utilities;
@@ -8,19 +9,26 @@ using kOS.Utilities;
 namespace kOS.AddOns.StockCamera
 {
     [KOSNomenclature("FlightCamera")]
-    public class FlightCameraValue : Structure
+    public class FlightCameraValue : Structure, Safe.IUpdateObserver, IDisposable
     {
         private SharedObjects shared;
+
+        private TriggerInfo camPositionTrigger = null;
+        private UserDelegate camPositionDelegate = null;
+
+        private NoDelegate noDelegate;
 
         public FlightCameraValue(SharedObjects shared)
         {
             this.shared = shared;
+            shared.UpdateHandler.AddObserver(this);
             AddSuffix(new string[] { "MODE", "CAMERAMODE" }, new SetSuffix<StringValue>(GetCameraMode, SetCameraMode));
             AddSuffix(new string[] { "FOV", "CAMERAFOV" }, new SetSuffix<ScalarValue>(GetCameraFov, SetCameraFov));
             AddSuffix(new string[] { "PITCH", "CAMERAPITCH" }, new SetSuffix<ScalarValue>(GetCameraPitch, SetCameraPitch));
             AddSuffix(new string[] { "HDG", "HEADING", "CAMERAHDG" }, new SetSuffix<ScalarValue>(GetCameraHdg, SetCameraHdg));
             AddSuffix(new string[] { "DISTANCE", "CAMERADISTANCE" }, new SetSuffix<ScalarValue>(GetCameraDistance, SetCameraDistance));
             AddSuffix(new string[] { "POSITION", "CAMERAPOSITION" }, new SetSuffix<Vector>(GetCameraPosition, SetCameraPosition));
+            AddSuffix("POSITIONUPDATER", new SetSuffix<UserDelegate>(GetCameraPositionDelegate, SetCameraPositionDelegate));
             AddSuffix("TARGET", new SetSuffix<Structure>(GetCameraTarget, SetCameraTarget));
             AddSuffix("TARGETPOS", new Suffix<Vector>(GetTargetPosition));
             AddSuffix("PIVOTPOS", new Suffix<Vector>(GetPivotPosition));
@@ -188,7 +196,7 @@ namespace kOS.AddOns.StockCamera
             switch (cam.targetMode)
             {
                 case FlightCamera.TargetMode.Vessel:
-                    return new VesselTarget(cam.vesselTarget, shared);
+                    return VesselTarget.CreateOrGetExisting(cam.vesselTarget, shared);
                 case FlightCamera.TargetMode.Part:
                     return new Suffixed.Part.PartValue(cam.partTarget, shared);
                 case FlightCamera.TargetMode.Transform:
@@ -218,6 +226,63 @@ namespace kOS.AddOns.StockCamera
                     }
                 }
             }
+        }
+
+        private void SetCameraPositionDelegate(UserDelegate del)
+        {
+            if (del is NoDelegate)
+            {
+                camPositionDelegate = null;
+            }
+            else
+            {
+                camPositionDelegate = del;
+            }
+        }
+
+        private UserDelegate GetCameraPositionDelegate()
+        {
+            if (camPositionDelegate == null)
+                return noDelegate ?? (noDelegate = new NoDelegate(shared.Cpu));
+            return camPositionDelegate;
+        }
+
+        public void KOSUpdate(double deltaTime)
+        {
+            if (camPositionDelegate == null)
+            {
+                camPositionTrigger = null;
+            }
+            else if (camPositionTrigger == null)
+            {
+                camPositionTrigger = camPositionDelegate.TriggerNextUpdate();
+            }
+            else if (camPositionTrigger.CallbackFinished)
+            {
+                var result = camPositionTrigger.ReturnValue as Vector;
+                if (result != null)
+                {
+                    SetCameraPosition(result);
+                    camPositionTrigger = camPositionDelegate.TriggerNextUpdate();
+                }
+                else
+                {
+                    camPositionTrigger = null;
+                    camPositionDelegate = null;
+                    throw new KOSInvalidDelegateType("FLIGHTCAMERA:POSITIONUPDATER", "Vector", camPositionTrigger.ReturnValue.KOSName);
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            if (shared != null)
+            {
+                shared.UpdateHandler.RemoveObserver(this);
+            }
+            shared = null;
+            camPositionDelegate = null;
+            camPositionTrigger = null;
         }
     }
 }
