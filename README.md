@@ -1,7 +1,7 @@
 kOS Stock Camera Addon
 **********************
 
-#Description
+# Description
 
 This project is an addon for [kOS](https://github.com/KSP-KOS/KOS), which is a
 mod for the game [Kerbal Space Program](https://kerbalspaceprogram.com/).  It
@@ -9,14 +9,14 @@ provides a method for controlling the game's stock camera position and
 orientation.  The "stock" designation is important, as other mods that change
 the camera's behavior may conflict with this functionality.
 
-#Structures
+# Structures
 
-##CAMERA
+## CAMERA
 
 * `FLIGHTCAMERA` - Get Only - `FLIGHTCAMERA` - Returns the object which allows
 control of the camera in the flight scene (see below).
 
-##FLIGHTCAMERA
+## FLIGHTCAMERA
 
 * `MODE` - Get Or Set - `String` - Returns the currently selected camera mode.
 When set, changes the camera's mode.  Valid options are `"AUTO"`, `"CHASE"`,
@@ -47,7 +47,7 @@ called once per tick to update the camera position.  Initially this will return
 a `DONOTHING` delegate.  Set it back to `DONOTHING` to stop the automatic
 position updates.
 
-#Building
+# Building
 
 You must have an IDE or compiler capable of building Visual Studio solutions
 (.sln files).  For the sake of simplicity, this repository assumes that it will
