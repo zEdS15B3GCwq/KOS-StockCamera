@@ -42,6 +42,10 @@ part that the camera is pointing at.  This is the same as the "Aim here" feature
 in stock KSP.
 * `TARGETPOS` - Get Only - For debugging purposes only.
 * `PIVOTPOS` - Get Only - For debugging purposes only.
+* `POSITIONUPDATER` - Get Or Set - `UserDelegate` - A delegate automatically
+called once per tick to update the camera position.  Initially this will return
+a `DONOTHING` delegate.  Set it back to `DONOTHING` to stop the automatic
+position updates.
 
 #Building
 
