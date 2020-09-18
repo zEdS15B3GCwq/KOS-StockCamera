@@ -198,7 +198,7 @@ namespace kOS.AddOns.StockCamera
                 case FlightCamera.TargetMode.Vessel:
                     return VesselTarget.CreateOrGetExisting(cam.vesselTarget, shared);
                 case FlightCamera.TargetMode.Part:
-                    return new Suffixed.Part.PartValue(cam.partTarget, shared);
+                    return Suffixed.Part.PartValueFactory.Construct(cam.partTarget, shared);
                 case FlightCamera.TargetMode.Transform:
                     throw new KOSException("Flight camera has target set to transform.  This is currently not supported.");
                 case FlightCamera.TargetMode.None:
@@ -255,7 +255,7 @@ namespace kOS.AddOns.StockCamera
             }
             else if (camPositionTrigger == null)
             {
-                camPositionTrigger = camPositionDelegate.TriggerNextUpdate();
+                camPositionTrigger = camPositionDelegate.TriggerOnFutureUpdate(Safe.Execution.InterruptPriority.Normal);
             }
             else if (camPositionTrigger.CallbackFinished)
             {
@@ -263,7 +263,7 @@ namespace kOS.AddOns.StockCamera
                 if (result != null)
                 {
                     SetCameraPosition(result);
-                    camPositionTrigger = camPositionDelegate.TriggerNextUpdate();
+                    camPositionTrigger = camPositionDelegate.TriggerOnFutureUpdate(Safe.Execution.InterruptPriority.Normal);
                 }
                 else
                 {
