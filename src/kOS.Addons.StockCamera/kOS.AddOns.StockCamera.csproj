@@ -66,7 +66,6 @@
     <Compile Include="FlightCameraValue.cs" />
     <Compile Include="MapCameraValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Safe\IUpdateObserver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
