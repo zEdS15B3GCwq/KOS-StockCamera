@@ -16,6 +16,8 @@ the camera's behavior may conflict with this functionality.
 * `FLIGHTCAMERA` - Get Only - `FLIGHTCAMERA` - Returns the object which allows
 control of the camera in the flight scene (see below).
 
+* `MAPCAMERA`* - Get Only - `MAPCAMERA` - Returns the object which allows control of the camera in mapview.
+
 ## FLIGHTCAMERA
 
 * `MODE` - Get Or Set - `String` - Returns the currently selected camera mode.
@@ -46,6 +48,19 @@ in stock KSP.
 called once per tick to update the camera position.  Initially this will return
 a `DONOTHING` delegate.  Set it back to `DONOTHING` to stop the automatic
 position updates.
+
+## MAPCAMERA
+
+* `SETFILTER(string, boolean)` - Sets whether objects of a given type should be visible in map mode.  See `FILTERNAMES` for a list of valid names.
+* `GETFILTER(string)` - returns a boolean indicating whether objects of the specified type are visible.  See `FILTERNAMES` for a list of valid names.
+* `COMMNETMODE` - get, set - string - Gets or sets the current commnet display mode.  See `COMMNETNAMES` for a list of valid modes.
+* `PITCH` or `CAMERAPITCH` - get, set - scalar - gets or sets the pitch angle of the camera, relative to the ecliptic plane.
+* `HDG` or `HEADING` or `CAMERAHDG` - get, set - scalar - gets or sets the camera heading (yaw)
+* `DISTANCE` or `CAMERADISTANCE` - get, set - scalar - returns the camera distance from the camera pivot, in meters.  Note that mapview will enforce certain limits on this value.
+* `POSITION` or `CAMERAPOSITION` - get, set - vector - gets or sets the position of the camera, in ship-raw coordinates.  Note that the camera will always be facing towards the pivot point.
+* `TARGET` - get, set - [vessel, body, node] - gets or sets the pivot object.  May be a vessel, body, or node.
+* `FILTERNAMES` - get - list - returns a list of the valid filter names for use with `SETFILTER` and `GETFILTER`
+* `COMMNETNAMES` - get - list - returns a list of the valid commnet display mode names for use with `COMMNETMODE`
 
 # Building
 

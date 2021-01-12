@@ -1,6 +1,11 @@
 kOS Stock Camera Addon Changelog
 ********************************
 
+# v0.2.0 2021-01-11
+
+- Update for KSP 1.8 - 1.11
+- Add `CAMERA:MAPCAMERA` suffix to control camera controls for mapview
+
 # v0.1.2 2020-09-18
 
 - Update for KSP 1.8 - 1.10
