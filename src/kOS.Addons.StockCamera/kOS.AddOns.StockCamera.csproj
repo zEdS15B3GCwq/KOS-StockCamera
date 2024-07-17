@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props" Condition="Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" />
+  <Import Project="..\..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props" Condition="Exists('..\..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -35,35 +35,16 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <BinariesOutputRelativePath>GameData\kOS-Addons\StockCamera</BinariesOutputRelativePath>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)KSPBuildTools\KSPCommon.props" />
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="$(KSPRoot)\GameData\kOS\Plugins\kOS.dll">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="kOS">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="kOS.Safe">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
+    <Reference Include="$(KSPRoot)\GameData\kOS\Plugins\kOS.Safe.dll">
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -80,29 +61,12 @@
   <ItemGroup>
 	  <Publicize Include="Assembly-CSharp"/>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\GameData\kOS-Addons\StockCamera"
-copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\GameData\kOS-Addons\StockCamera"
-</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props'))" />
-    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('..\..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets'))" />
   </Target>
-  <Import Project="..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Import Project="..\..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets" Condition="Exists('..\..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" />
 </Project>
