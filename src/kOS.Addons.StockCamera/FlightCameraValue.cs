@@ -32,6 +32,10 @@ namespace kOS.AddOns.StockCamera
             AddSuffix("TARGET", new SetSuffix<Structure>(GetCameraTarget, SetCameraTarget));
             AddSuffix("TARGETPOS", new Suffix<Vector>(GetTargetPosition));
             AddSuffix("PIVOTPOS", new Suffix<Vector>(GetPivotPosition));
+            AddSuffix("FORWARD", new Suffix<Vector>(GetCameraForward));
+            AddSuffix("UP", new Suffix<Vector>(GetCameraUp));
+            AddSuffix("RIGHT", new Suffix<Vector>(GetCameraRight));
+            AddSuffix("WORLDTOSCREEN", new OneArgsSuffix<Vector, Vector>(WorldToScreen));
         }
 
         private void SetCameraMode(StringValue value)
@@ -226,6 +230,57 @@ namespace kOS.AddOns.StockCamera
                     }
                 }
             }
+        }
+
+        private Vector GetCameraForward()
+        {
+            var cam = FlightCamera.fetch;
+            if (cam != null && cam.transform != null)
+            {
+                return new Vector(cam.transform.forward);
+            }
+            return Vector.Zero;
+        }
+
+        private Vector GetCameraUp()
+        {
+            var cam = FlightCamera.fetch;
+            if (cam != null && cam.transform != null)
+            {
+                return new Vector(cam.transform.up);
+            }
+            return Vector.Zero;
+        }
+
+        private Vector GetCameraRight()
+        {
+            var cam = FlightCamera.fetch;
+            if (cam != null && cam.transform != null)
+            {
+                return new Vector(cam.transform.right);
+            }
+            return Vector.Zero;
+        }
+
+        private Vector WorldToScreen(Vector worldPos)
+        {
+            var cam = FlightCamera.fetch;
+            if (cam != null && cam.mainCamera != null)
+            {
+                // Convert KOS position (relative to vessel CoM) to world position
+                UnityEngine.Vector3 worldPosition = worldPos.ToVector3() + shared.Vessel.CoMD;
+
+                // Convert to viewport coordinates (0-1 range)
+                UnityEngine.Vector3 viewportPoint = cam.mainCamera.WorldToViewportPoint(worldPosition);
+
+                // Return x, y in pixels, z is distance from camera (negative if behind)
+                return new Vector(
+                    viewportPoint.x * UnityEngine.Screen.width,
+                    viewportPoint.y * UnityEngine.Screen.height,
+                    viewportPoint.z
+                );
+            }
+            return Vector.Zero;
         }
 
         private void SetCameraPositionDelegate(UserDelegate del)
