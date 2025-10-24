@@ -66,18 +66,32 @@ namespace kOS.AddOns.StockCamera
 			throw new KOSException("Failed to get active crewmember");
 		}
 
-		private void SetActiveKerbal(CrewMember crewMember)
-		{
-			if (!shared.Vessel.isActiveVessel)
-				throw new KOSException("ActiveKerbal can only be set on the activevessel!");
-			else if (!shared.Vessel.crew.Contains(crewMember.ProtoCrewMember))
-				throw new KOSException($"CrewMember {crewMember.Name} is not on Vessel {shared.Vessel.name}!");
+        private void SetActiveKerbal(CrewMember crewMember)
+        {
+            if (!shared.Vessel.isActiveVessel)
+                throw new KOSException("ActiveKerbal can only be set on the activevessel!");
 
-			var cameraManager = CameraManager.Instance;
-			cameraManager.SetCameraIVA(crewMember.ProtoCrewMember.KerbalRef, true);
-		}
+            // kOS's CrewMember wrapper (kOS.Suffixed.CrewMember) does not expose the underlying
+            // ProtoCrewMember as a public property in the version you have.  Instead, find the
+            // ProtoCrewMember on the vessel by matching the wrapper's public Name.
+            ProtoCrewMember target = null;
+            foreach (var p in shared.Vessel.crew)
+            {
+                if (p != null && p.name == crewMember.Name)
+                {
+                    target = p;
+                    break;
+                }
+            }
 
-		private BooleanValue GetActive()
+            if (target == null)
+                throw new KOSException($"CrewMember {crewMember.Name} is not on Vessel {shared.Vessel.name}!");
+
+            var cameraManager = CameraManager.Instance;
+            cameraManager.SetCameraIVA(target.KerbalRef, true);
+        }
+
+        private BooleanValue GetActive()
 		{
 			return CameraManager.Instance.currentCameraMode == CameraManager.CameraMode.IVA;
 		}
